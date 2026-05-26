@@ -1,0 +1,85 @@
+{
+  "name": "Manraj Singh",
+  "phone": "98788-60542",
+  "email": "manrajkhatter@gmail.com",
+  "linkedin": "linkedin.com/in/manraj-singh",
+  "summary_default": "Computer Science undergraduate with internship and project experience in technical solution delivery, web technologies, and API integration. Strong problem-solving and communication skills, with a learning-focused mindset.",
+  "education": [
+    {
+      "institution": "Thapar University",
+      "location": "Patiala, Punjab",
+      "degree": "Bachelor of Technology in Computer Science",
+      "cgpa": "8.05",
+      "dates": "Aug 2022 – May 2026"
+    },
+    {
+      "institution": "M.G.N. Public School",
+      "location": "Jalandhar, Punjab",
+      "degree": "Class XII (94.4%)",
+      "dates": "Apr 2021 – May 2022"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Business Analyst Intern",
+      "company": "Stellent.ai",
+      "location": "Remote",
+      "dates": "Jan 2026 – Present",
+      "bullets": [
+        "Built and delivered a US Property Management Company lead-generation dataset covering 49 PMCs, capturing community counts, unit volumes, geographies, and corporate vs. student/senior segment breakdowns to support enterprise outbound strategy.",
+        "Designed a repeatable data-enrichment workflow combining directory aggregation with profile-level fetches, reducing manual research time by ~60% while preserving data accuracy and Excel formatting integrity.",
+        "Partnered with business stakeholders to translate ambiguous requirements into structured deliverables and reproducible analyses."
+      ]
+    },
+    {
+      "title": "Data & Research Analyst Intern",
+      "company": "Mosaic Digital (Hindustan Times)",
+      "location": "Gurugram, Haryana",
+      "dates": "June 2024 – Aug 2024",
+      "bullets": [
+        "Partnered with cross-functional stakeholders to analyze 300+ companies, translating business and platform requirements into structured insights supporting enterprise solution and engagement initiatives.",
+        "Developed 20+ analytical frameworks using SQL and Excel to validate data, identify patterns, and improve decision accuracy by 15%.",
+        "Supported requirement definition and documentation by converting unstructured datasets and inputs into clear, actionable specifications for business and technical teams."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "CodeColab — Realtime Collaborative Workspace",
+      "stack": "Next.js, WebSockets, WebRTC, Node.js, Express",
+      "bullets": [
+        "Designed and implemented a scalable real-time collaborative platform using WebSockets, supporting 50+ concurrent users with sub-100ms synchronization latency for seamless multi-user interaction.",
+        "Integrated collaborative code editor, whiteboard, and WebRTC-based video conferencing, improving technical interview collaboration efficiency by 60% and evaluation clarity by 50%."
+      ]
+    },
+    {
+      "name": "Video2Blog — AI Automation Pipeline",
+      "stack": "CrewAI, LangChain, Flask",
+      "bullets": [
+        "Designed and implemented a multi-agent AI automation pipeline to convert video content into structured blog drafts through automated transcription and summarization.",
+        "Delivered a solution achieving 90% automation accuracy, significantly reducing manual content effort and enabling scalable, user-facing content workflows."
+      ]
+    },
+    {
+      "name": "QEase — Scalable Virtual Queue System",
+      "stack": "Next.js, Express, Redis, AWS (EC2, S3), Docker",
+      "bullets": [
+        "Designed and implemented a real-time virtual queue using Redis and WebSockets, handling traffic spikes of up to 10,000 users/min to prevent service downtime.",
+        "Built a no-code configuration dashboard enabling businesses to deploy and customize virtual waiting rooms 95% faster, improving customer flow management by 25%."
+      ]
+    }
+  ],
+  "skills": {
+    "languages": ["Java", "Python", "JavaScript", "TypeScript", "SQL"],
+    "web": ["HTML", "CSS", "React", "Next.js", "Node.js", "Express"],
+    "data": ["SQL", "PostgreSQL", "MongoDB", "Redis", "Excel", "Data Analysis"],
+    "cloud_devops": ["AWS (EC2, S3)", "Docker", "Git", "CI/CD"],
+    "ai_ml": ["LangChain", "CrewAI", "LLM integration"],
+    "tools": ["JIRA", "Maven", "Agile"]
+  },
+  "leadership": [
+    "Led marketing for URJA'25 (10K–15K participants) and Saturnalia'24 (25K–30K attendees) at TIET, driving engagement across 70+ events.",
+    "Raised INR 30L+ in sponsorships across festivals; managed cross-functional teams of 20+ members.",
+    "Directed Virsa Cultural Society outreach — 1,200+ garments collected, 170+ beneficiaries supported."
+  ]
+}

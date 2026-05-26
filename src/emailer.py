@@ -1,0 +1,163 @@
+"""
+Build and send the daily email digest.
+Uses Gmail SMTP with an app password (free, no API needed).
+"""
+from __future__ import annotations
+import os
+import smtplib
+import logging
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+from datetime import datetime
+from pathlib import Path
+from urllib.parse import quote
+
+log = logging.getLogger("emailer")
+
+
+def build_html_digest(jobs: list[dict], profile: dict, mode: str) -> str:
+    """Builds the full HTML digest. Mode = 'free' or 'api'."""
+    today = datetime.now().strftime("%a %d %b %Y")
+    strong = sum(1 for j in jobs if j["fit_score"] >= 7)
+    total = len(jobs)
+
+    css = """
+    <style>
+        body { font-family: -apple-system, Segoe UI, sans-serif; color:#1a1a1a;
+               max-width:680px; margin:0 auto; padding:16px; }
+        h1 { color:#1F4E78; font-size:22px; margin:8px 0 4px; }
+        .sub { color:#6b7280; font-size:13px; margin-bottom:16px; }
+        .job { border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px;
+               margin-bottom:14px; background:#fff; }
+        .job h2 { font-size:16px; margin:0 0 6px; color:#1F4E78; }
+        .meta { color:#4b5563; font-size:13px; margin-bottom:10px; }
+        .score { display:inline-block; background:#FEF3C7; color:#92400E;
+                 padding:2px 8px; border-radius:12px; font-weight:600;
+                 font-size:12px; margin-left:6px; }
+        .score.high { background:#D1FAE5; color:#065F46; }
+        .score.mid  { background:#DBEAFE; color:#1E40AF; }
+        .why { color:#6b7280; font-size:12px; margin:6px 0 10px; }
+        .actions a { display:inline-block; padding:7px 14px; margin-right:6px;
+                     border-radius:6px; text-decoration:none; font-size:13px;
+                     font-weight:500; }
+        .apply { background:#1F4E78; color:#fff !important; }
+        .prompt { background:#fff; color:#1F4E78 !important; border:1px solid #1F4E78; }
+        .footer { color:#9ca3af; font-size:12px; margin-top:24px;
+                  border-top:1px solid #e5e7eb; padding-top:12px; }
+        details { margin-top:10px; }
+        summary { cursor:pointer; color:#4b5563; font-size:12px; }
+        pre { background:#F9FAFB; padding:10px; border-radius:6px;
+              font-size:11px; overflow-x:auto; white-space:pre-wrap;
+              border:1px solid #e5e7eb; }
+    </style>
+    """
+
+    header = f"""
+    <h1>🎯 {total} jobs for you today
+        {f'<span class=\"score high\">{strong} strong</span>' if strong else ''}
+    </h1>
+    <div class="sub">Daily digest · {today} · Mode: <b>{mode.upper()}</b></div>
+    """
+
+    if not jobs:
+        body = '<div class="job"><p>No matching jobs found today. The hunt continues tomorrow.</p></div>'
+    else:
+        cards = []
+        for i, j in enumerate(jobs, 1):
+            score = j["fit_score"]
+            score_class = "high" if score >= 7 else "mid" if score >= 5 else ""
+            posted = j["posted_at"].strftime("%d %b, %H:%M UTC") if j.get("posted_at") else "—"
+            ctc = f" · ~₹{j['ctc_lpa']} LPA" if j.get("ctc_lpa") else ""
+            location = j.get("location") or "—"
+            source = j.get("source", "")
+            track = (j.get("fit_reasoning") or {}).get("track_match", "")
+            tier = (j.get("fit_reasoning") or {}).get("company_tier", "")
+            tier_badge = f" · <b>{tier}-tier</b>" if tier else ""
+            skill_hits = (j.get("fit_reasoning") or {}).get("skill_matches", [])
+            why = f"Matched skills: {', '.join(skill_hits[:6])}" if skill_hits else f"Track: {track}"
+
+            actions = f'<a class="apply" href="{j["url"]}">Apply on {source} →</a>'
+
+            # Mode-specific output
+            extra = ""
+            if mode == "free":
+                # Embed the prompt in a details section
+                prompt = j.get("tailoring_prompt", "")
+                extra = f"""
+                <details>
+                  <summary>📋 Copy resume-tailoring prompt (paste into claude.ai)</summary>
+                  <pre>{_escape(prompt)}</pre>
+                </details>"""
+            elif mode == "api" and j.get("resume_attached"):
+                extra = '<div class="why">📎 Tailored resume PDF attached to this email.</div>'
+
+            cards.append(f"""
+            <div class="job">
+              <h2>#{i} {_escape(j['company'])} — {_escape(j['title'])}
+                  <span class="score {score_class}">{score}/10</span>
+              </h2>
+              <div class="meta">{_escape(location)}{ctc} · {posted}{tier_badge}</div>
+              <div class="why">{_escape(why)}</div>
+              <div class="actions">{actions}</div>
+              {extra}
+            </div>
+            """)
+        body = "\n".join(cards)
+
+    footer = """
+    <div class="footer">
+      Auto-generated by your Job Hunter bot · sources: Adzuna, RemoteOK, Greenhouse, Lever, Ashby, YC<br>
+      You'll get this digest daily Mon–Sat at 7am IST. Best days to apply: Tue–Thu.<br>
+      To tune what shows up, edit <code>config/profile.yaml</code> in your repo.
+    </div>
+    """
+
+    return f"<!DOCTYPE html><html><head>{css}</head><body>{header}{body}{footer}</body></html>"
+
+
+def _escape(s: str) -> str:
+    return (s or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def send_email(html: str, subject: str, to_email: str,
+               attachments: list[Path] | None = None) -> bool:
+    """Send via Gmail SMTP. Requires GMAIL_USER and GMAIL_APP_PASSWORD env vars."""
+    gmail_user = os.getenv("GMAIL_USER", "")
+    gmail_pwd = os.getenv("GMAIL_APP_PASSWORD", "")
+    if not gmail_user or not gmail_pwd:
+        log.error("GMAIL_USER or GMAIL_APP_PASSWORD missing — cannot send")
+        return False
+
+    msg = MIMEMultipart("mixed")
+    msg["From"] = gmail_user
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    # Custom header so Gmail filter can route to "JobBot" label
+    msg["X-Job-Bot"] = "true"
+
+    alt = MIMEMultipart("alternative")
+    alt.attach(MIMEText(html, "html"))
+    msg.attach(alt)
+
+    for att in (attachments or []):
+        if not att.exists():
+            continue
+        with open(att, "rb") as f:
+            part = MIMEBase("application", "pdf")
+            part.set_payload(f.read())
+        encoders.encode_base64(part)
+        part.add_header("Content-Disposition",
+                        f'attachment; filename="{att.name}"')
+        msg.attach(part)
+
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=30) as server:
+            server.login(gmail_user, gmail_pwd)
+            server.send_message(msg)
+        log.info(f"Email sent to {to_email}")
+        return True
+    except Exception as e:
+        log.error(f"Email send failed: {e}")
+        return False

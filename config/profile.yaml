@@ -1,0 +1,127 @@
+# =====================================================================
+# YOUR PROFILE — edit this file with your background and preferences
+# =====================================================================
+# This is the ONLY file you need to customize. Everything else is plumbing.
+# Update this file once, push to GitHub, system runs forever.
+
+name: "Manraj Singh"
+email: "manrajkhatter@gmail.com"
+
+# ----- Role tracks you're applying to -----
+# The system pulls jobs matching any of these. Add/remove freely.
+role_tracks:
+  sde:
+    enabled: true
+    keywords: ["software engineer", "sde", "backend engineer", "full stack",
+               "associate engineer", "software developer", "platform engineer"]
+    weight: 1.0   # how much to prioritize this track (1.0 = full weight)
+  data:
+    enabled: true
+    keywords: ["data analyst", "data engineer", "analytics engineer",
+               "business intelligence", "bi analyst"]
+    weight: 1.0
+  business_analyst:
+    enabled: true
+    keywords: ["business analyst", "product analyst", "associate analyst",
+               "operations analyst"]
+    weight: 0.9
+  apm:
+    enabled: true
+    keywords: ["associate product manager", "apm", "product manager intern",
+               "product management associate"]
+    weight: 0.8
+
+# ----- Filters -----
+filters:
+  experience_max_years: 1     # hide anything asking for >1 yr experience
+  location_keywords: ["india", "bangalore", "bengaluru", "hyderabad",
+                      "pune", "chennai", "gurgaon", "noida", "delhi",
+                      "mumbai", "remote", "anywhere"]
+  exclude_keywords: ["senior", "lead", "principal", "staff", "manager",
+                     "architect", "director", "vp"]
+  min_ctc_lpa: 8              # ignore jobs explicitly listing < 8 LPA
+                              # (jobs without listed CTC still pass)
+  max_age_hours: 72           # only jobs posted in last 3 days
+  min_fit_score: 5            # don't bother emailing matches below this
+
+# ----- Your skills (used for fit scoring) -----
+# The closer a job's keywords match this list, the higher the fit score.
+skills:
+  - "python"
+  - "java"
+  - "javascript"
+  - "typescript"
+  - "react"
+  - "next.js"
+  - "node.js"
+  - "express"
+  - "sql"
+  - "postgresql"
+  - "mongodb"
+  - "redis"
+  - "rest api"
+  - "websockets"
+  - "webrtc"
+  - "aws"
+  - "docker"
+  - "git"
+  - "ci/cd"
+  - "html"
+  - "css"
+  - "data analysis"
+  - "excel"
+  - "data visualization"
+  - "agile"
+  - "jira"
+  - "stakeholder management"
+  - "requirements gathering"
+  - "langchain"
+  - "llm"
+  - "ai automation"
+
+# ----- Target companies (S/A/B tier — boosts fit score) -----
+# Jobs at these companies get a score boost
+target_companies:
+  S_tier:   # +3 to fit score
+    - "Databricks"
+    - "Atlassian"
+    - "Stripe"
+    - "Confluent"
+    - "Snowflake"
+    - "Postman"
+    - "Hasura"
+  A_tier:   # +2 to fit score
+    - "Razorpay"
+    - "PhonePe"
+    - "CRED"
+    - "Groww"
+    - "Zerodha"
+    - "Sprinklr"
+    - "Freshworks"
+    - "BrowserStack"
+    - "Walmart Global Tech"
+    - "Tekion"
+    - "Atlan"
+  B_tier:   # +1 to fit score
+    - "Chargebee"
+    - "MoEngage"
+    - "Innovaccer"
+    - "Whatfix"
+    - "Mindtickle"
+    - "Darwinbox"
+    - "Uniphore"
+    - "Razorpay"
+    - "Postman"
+
+# ----- Daily digest settings -----
+digest:
+  max_jobs: 15                # cap on jobs per email (avoid overwhelm)
+  send_if_zero: false         # don't email on days with 0 matches
+  timezone: "Asia/Kolkata"
+  send_hour: 7                # IST hour to send (24-hr format)
+  email_label: "JobBot"       # Gmail label — set up filter to auto-archive
+
+# ----- Mode (free vs API) -----
+# Switch to "api" after you create an Anthropic API key.
+# Free mode: copy-paste prompts. API mode: auto-generated PDF resumes.
+mode: "free"                  # options: "free" | "api"
