@@ -54,9 +54,10 @@ def build_html_digest(jobs: list[dict], profile: dict, mode: str) -> str:
     </style>
     """
 
+    strong_badge = f'<span class="score high">{strong} strong</span>' if strong else ''
     header = f"""
     <h1>🎯 {total} jobs for you today
-        {f'<span class=\"score high\">{strong} strong</span>' if strong else ''}
+        {strong_badge}
     </h1>
     <div class="sub">Daily digest · {today} · Mode: <b>{mode.upper()}</b></div>
     """
