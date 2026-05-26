@@ -39,11 +39,13 @@ filters:
                       "mumbai", "remote", "anywhere", "wfh", ""]
   exclude_keywords: ["senior", "lead", "principal", "staff", "manager",
                      "architect", "director", "vp", "vice president",
-                     "head of", " ii ", " iii ", "sr.", "sr ",
-                     "5+ years", "7+ years", "10+ years"]
+                     "head of", "ii", "iii", "iv", "sr",
+                     "3+ years", "3-5 years", "4+ years", "5+ years",
+                     "6+ years", "7+ years", "8+ years", "10+ years",
+                     "minimum 3 years", "minimum 4 years", "minimum 5 years"]
   min_ctc_lpa: 8
   max_age_hours: 168
-  min_fit_score: 4
+  min_fit_score: 5
 
 # ----- Your skills (used for fit scoring) -----
 # The closer a job's keywords match this list, the higher the fit score.
