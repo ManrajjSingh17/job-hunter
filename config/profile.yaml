@@ -33,16 +33,17 @@ role_tracks:
 
 # ----- Filters -----
 filters:
-  experience_max_years: 1     # hide anything asking for >1 yr experience
+  experience_max_years: 2
   location_keywords: ["india", "bangalore", "bengaluru", "hyderabad",
                       "pune", "chennai", "gurgaon", "noida", "delhi",
-                      "mumbai", "remote", "anywhere"]
+                      "mumbai", "remote", "anywhere", "wfh", ""]
   exclude_keywords: ["senior", "lead", "principal", "staff", "manager",
-                     "architect", "director", "vp"]
-  min_ctc_lpa: 8              # ignore jobs explicitly listing < 8 LPA
-                              # (jobs without listed CTC still pass)
-  max_age_hours: 72           # only jobs posted in last 3 days
-  min_fit_score: 5            # don't bother emailing matches below this
+                     "architect", "director", "vp", "vice president",
+                     "head of", " ii ", " iii ", "sr.", "sr ",
+                     "5+ years", "7+ years", "10+ years"]
+  min_ctc_lpa: 8
+  max_age_hours: 168
+  min_fit_score: 4
 
 # ----- Your skills (used for fit scoring) -----
 # The closer a job's keywords match this list, the higher the fit score.
