@@ -62,27 +62,19 @@ def score_job(job: dict, profile: dict) -> tuple[float, dict]:
 
     # ----- 4. Experience filter -----
     max_yrs = profile["filters"]["experience_max_years"]
-    # Match patterns like: "3+ years", "3-5 years", "minimum 2 years"
-    # For ranges like "0-2 years", take the LOWER bound (min required)
     exp_min = None
-    range_match = re.search(r"(\d+)\s*[-–to]+\s*(\d+)\s*(?:years?|yrs?)", full_text)
+    # Match ranges first: "3-5 years", "3 to 5 years", "0-2 yrs"
+    range_match = re.search(r"(\d+)\s*[-–]\s*(\d+)\s*(?:\+?\s*)?(?:years?|yrs?)", full_text)
     if range_match:
         exp_min = int(range_match.group(1))
-    else:
-        single_matches = re.findall(r"(\d+)\+?\s*(?:years?|yrs?)\s+(?:of\s+)?(?:experience|exp)", full_text)
-        if single_matches:
-            exp_min = min(int(m) for m in single_matches)
+    # Match single: "3+ years", "minimum 3 years", "3 years of experience"
+    if exp_min is None:
+        single = re.search(r"(?:minimum\s+|min\s+|at least\s+)?(\d+)\+?\s*(?:years?|yrs?)\s*(?:of\s+)?(?:experience|exp)?", full_text)
+        if single:
+            exp_min = int(single.group(1))
     if exp_min is not None and exp_min > max_yrs:
         reasoning["penalties"].append(f"requires {exp_min}+ yrs exp (max {max_yrs})")
         return 0.0, reasoning
-
-    # Look for fresher signals — boost
-    if any(kw in full_text for kw in ["fresher", "graduate", "new grad", "0-1 year",
-                                       "entry level", "entry-level", "no prior experience",
-                                       "recent graduate", "campus"]):
-        score += 1.0
-        reasoning["boosts"].append("fresher-friendly phrasing")
-
     # ----- 5. Skill keyword matches -----
     skill_hits = 0
     for skill in profile["skills"]:
